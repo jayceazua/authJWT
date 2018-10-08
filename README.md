@@ -1,5 +1,7 @@
 # Authentication with JWT (JSON Web Tokens) in Node
 
+<img src=""/>
+
 #### Notes:
 - You do not need to keep track of sessions, cookies, CSRF, or CORS.
 - [header].[payload].[signature]
