@@ -1,6 +1,6 @@
 # Authentication with JWT (JSON Web Tokens) in Node
 
-<img src="https://github.com/jayceazua/authJWT/blob/master/jwt-auth.jpg" width="600" height="600"/>
+<img src="https://github.com/jayceazua/authJWT/blob/master/jwt-auth.jpg" width="500" height="500"/>
 
 #### Notes:
 - You do not need to keep track of sessions, cookies, CSRF, or CORS.
