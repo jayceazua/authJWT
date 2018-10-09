@@ -2,6 +2,9 @@
 
 <img src="https://github.com/jayceazua/authJWT/blob/master/jwt-auth.jpg" width="700" height="500"/>
 
+### Technologies
+- [JSON Web Token](https://github.com/auth0/node-jsonwebtoken)
+
 #### Notes:
 - You do not need to keep track of sessions, cookies, CSRF, or CORS.
 - [header].[payload].[signature]
