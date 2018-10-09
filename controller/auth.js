@@ -2,17 +2,20 @@ const router = require('express').Router();
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
+// Mock User
+const user = {
+    email: 'jack.frost@email.com',
+    password: 'superSecretPassword',
+    firstName: 'Jack',
+    lastName: 'Frost'
+}
+
+
 router.get('/sign-up', (req, res) => {
     res.render('sign-up');
 });
 
 router.post('/login', (req, res) => {
-    // Mock User
-    const user = {
-        id: 1,
-        username: 'jayceazua',
-        email: 'jayce.azua@gmail.com'
-    }
     jwt.sign({user}, 'secret_key',
     // options (e.g. expiration)
     {expiresIn: '30s'},
