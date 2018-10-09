@@ -22,7 +22,7 @@ router.post('/login', (req, res) => {
     // you want to use localStorage for saving tokens
 });
 
-router.post('/', verifyToken, (req, res) => {
+router.post('/bananas', verifyToken, (req, res) => {
     jwt.verify(req.token, 'secret_key', (err, authData) => {
         // check for error
         if (err) {
@@ -30,7 +30,7 @@ router.post('/', verifyToken, (req, res) => {
         }
         else {
             res.json({
-                message: "You are in!",
+                message: " love bananas!",
                 authData
             });
         }
