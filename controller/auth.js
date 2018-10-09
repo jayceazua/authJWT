@@ -3,9 +3,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 router.get('/sign-up', (req, res) => {
-    res.json({
-        message: 'Sign up'
-    })
+    res.render('sign-up');
 });
 
 router.post('/login', (req, res) => {

@@ -4,8 +4,10 @@
 
 ### Technologies for Authentication
 - [JSON Web Token](https://github.com/auth0/node-jsonwebtoken)
-- [BCryptjs](https://www.npmjs.com/package/bcryptjs)
--
+- [bcryptjs](https://www.npmjs.com/package/bcryptjs)
+- [js-cookie](https://github.com/js-cookie/js-cookie)
+- [express-jwt](https://github.com/auth0/express-jwt)
+- [cookie-parser](https://www.npmjs.com/package/cookie-parser)
 
 #### Notes:
 - You do not need to keep track of sessions, cookies, CSRF, or CORS.
