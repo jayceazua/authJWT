@@ -44,7 +44,7 @@ UserSchema.pre('save', (next) => {
     };
 
     bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(user.password, salt, => (err, hash) {
+        bcrypt.hash(user.password, salt, (err, hash) => {
             user.password = hash;
             next();
         });
