@@ -2,8 +2,9 @@ const router = require('express').Router();
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
-// Mock User
-const user = {
+// Mock User input
+const mockUser = {
+    username: 'jackFrost',
     email: 'jack.frost@email.com',
     password: 'superSecretPassword',
     firstName: 'Jack',
@@ -11,34 +12,60 @@ const user = {
 }
 
 
+
+// SIGN UP FORM
 router.get('/sign-up', (req, res) => {
-    res.render('sign-up');
+    res.json({'sign-up'});
+});
+// SIGN UP POST
+router.post('/sign-up', (req, res) => {
+    // create a new instance of our model
+    // Create User
+    const user = new User(mockUser);
+    user.save().then((user) => {
+        let token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: "60 days" });
+        res.json('Success');
+    }).catch((err) => {
+        console.log(err.message);
+        return res.status(400).send({ err: err });
+    });
 });
 
+
+// LOGIN FORM
+router.get('/login', (req, res) => {
+    res.json({'login'})
+})
+// LOGIN POST
 router.post('/login', (req, res) => {
-    jwt.sign({user}, 'secret_key',
-    // options (e.g. expiration)
-    {expiresIn: '30s'},
-    (err, token) => {
-        res.json({token})
+    User.findById(req.params._id)
+    .then((user) => {
+        jwt.sign({ _id: user._id }, 'secret_key', (err, token) => {
+            res.json({token})
+        });
+            // you want to use localStorage for saving tokens
+    })
+    .catch((err) => {
+        console.log(err.message)
     });
-    // you want to use localStorage for saving tokens
 });
 
-router.post('/bananas', verifyToken, (req, res) => {
-    jwt.verify(req.token, 'secret_key', (err, authData) => {
-        // check for error
-        if (err) {
-            res.sendStatus(403)
-        }
-        else {
-            res.json({
-                message: " love bananas!",
-                authData
-            });
-        }
+// passing middleware you do not need to invoke
+router.get('/bananas', verifyToken, (req, res) => {
+    jwt.verify(req.token, 'secret_key')
+    .then((authData) => {
+        res.json({
+            message: " love bananas!",
+            authData
+        });
+    })
+    .catch((err) => {
+        res.sendStatus(403)
     });
 });
+
+
+
 
 // Verify Token
 function verifyToken(req, res, next) {
@@ -56,9 +83,11 @@ function verifyToken(req, res, next) {
         next();
     }
     else {
-        // forbidden
+        // Forbidden
         res.sendStatus(403)
     }
 }
+
+
 
 module.exports = router;

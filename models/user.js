@@ -1,6 +1,6 @@
-const mongoose = require('mongoose'),
-    bcrypt = require("bcryptjs"),
-    Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema;
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new Schema({
     createdAt: {
@@ -9,53 +9,44 @@ const UserSchema = new Schema({
     updatedAt: {
         type: Date
     },
-    email: {
-        type: String,
-        unique: true,
-        required: true
-    },
     password: {
         type: String,
-        required: true
+        select: false
     },
-    firstName: {
-        type: String,
-        required: true
-    },
-    lastName: {
+    username: {
         type: String,
         required: true
     }
-
 });
 
-UserSchema.pre('save', (next) => {
-    // SET createdAt AND updatedAt
-    let now = new Date();
-    this.updatedAt = now;
-    if (!this.createdAt) {
-        this.createdAt = now;
-    };
+// Must use function here! ES6 => functions do not bind this!
+UserSchema.pre('save', function(next) {
+  // SET createdAt AND updatedAt
+  const now = new Date();
+  this.updatedAt = now;
+  if ( !this.createdAt ) {
+    this.createdAt = now;
+  }
 
-    // ENCRYPT PASSWORD
-    let user = this;
-    if (!user.isModified('password')) {
-        return next();
-    };
-
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(user.password, salt, (err, hash) => {
-            user.password = hash;
-            next();
-        });
+  // ENCRYPT PASSWORD
+  const user = this;
+  if (!user.isModified('password')) {
+    return next();
+  }
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(user.password, salt, (err, hash) => {
+      user.password = hash;
+      next();
     });
-
+  });
 });
+
 
 UserSchema.methods.comparePassword = (password, done) => {
-    bcrypt.compare(password, this.password, (err, isMatch) => {
-        done(err, isMatch);
-    });
+  bcrypt.compare(password, this.password, (err, isMatch) => {
+    done(err, isMatch);
+  });
 };
+
 
 module.exports = mongoose.model('User', UserSchema);
