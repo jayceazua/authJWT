@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 const validator = require('validator');
 
-let userSchema = new Schema({
+let userSchema = new Schema ({
     email: {
         type: String,
         required: true,
@@ -28,7 +29,7 @@ let userSchema = new Schema({
             required: true
         }
     }]
-})
+});
 
 
 

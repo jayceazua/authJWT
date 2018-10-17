@@ -1,13 +1,28 @@
 const exp = require('express');
+const User =  require('./models/user');
+const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 const app = exp();
 
 // database connection
+require('./database/MongoDB');
+// MIDDLEWARE
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+// override with POST having ?_method=DELETE & ?_method=PUT
+app.use(methodOverride('X-HTTP-Method-Override'));
+app.use(methodOverride('_method'));
+app.use(methodOverride((req, res) => {
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    let method = req.body._method;
+    delete req.body._method;
+    return method;
+  }
+}));
 
-// routes
+const auth = require('./controllers/auth')
+app.use('/auth', auth);
 
-app.get('/', (req, res) => {
-    res.send('Authenication Tutorial')
-});
 
 app.listen(3000, () => {
     console.log(`Server is on port: 3000`)
