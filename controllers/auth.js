@@ -9,15 +9,15 @@ router.get('/users', (req, res) => {
 
 // CREATE USER
 router.post('/users', (req, res) => {
-    let body = _.pick(req.body, ['email', 'password'])
-    let user =  new User(body)
+    let body = _.pick(req.body, ['email', 'password']);
+    let user =  new User(body);
     user.save()
     .then((_user) => {
         res.send(_user)
     })
     .catch((e) => {
         res.status(400).send(e)
-    })
+    });
 });
 
 module.exports = router
