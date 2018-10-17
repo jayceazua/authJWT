@@ -1,8 +1,9 @@
-const exp = require('express');
+const express = require('express');
 const User =  require('./models/user');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const app = exp();
+const port = process.env.PORT || 3000;
+const app = express();
 
 // database connection
 require('./database/MongoDB');
@@ -21,7 +22,7 @@ app.use(methodOverride((req, res) => {
 }));
 
 const auth = require('./controllers/auth')
-app.use('/auth', auth);
+app.use(auth);
 
 
 app.listen(3000, () => {

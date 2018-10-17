@@ -7,7 +7,7 @@ let userSchema = new Schema ({
         type: String,
         required: true,
         trim: true,
-        minlength: true,
+        minlength: 1,
         unique: true,
         validate: {
             validator: validator.isEmail,
@@ -36,4 +36,4 @@ let userSchema = new Schema ({
 
 let User = mongoose.model('User', userSchema);
 
-module.exports = { User }
+module.exports = User

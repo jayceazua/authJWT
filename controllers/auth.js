@@ -1,24 +1,23 @@
 const router = require('express').Router();
+const _ = require('lodash');
 const User = require('../models/user');
 
-// SIGN UP FORM
+// NEW USER
 router.get('/users', (req, res) => {
     res.send('sign up form')
 });
 
-// NEW USER
+// CREATE USER
 router.post('/users', (req, res) => {
-    const user = new User({
-        email: req.body.email,
-        password: req.body.password
-    });
-
-    user.save().then((user) => {
-        res.send(user);
-    }).catch((e) => {
-        res.status(400).send(e);
-    });
-    
+    let body = _.pick(req.body, ['email', 'password'])
+    let user =  new User(body)
+    user.save()
+    .then((_user) => {
+        res.send(_user)
+    })
+    .catch((e) => {
+        res.status(400).send(e)
+    })
 });
 
 module.exports = router
