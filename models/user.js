@@ -36,7 +36,6 @@ let userSchema = new Schema({
 userSchema.methods.toJSON = function() {
     let user = this;
     let userObject = user.toObject();
-
     return _.pick(userObject, ['_id', 'email'])
 }
 
@@ -64,7 +63,7 @@ userSchema.statics.findByToken = function(token) {
     try {
         decoded = jwt.verify(token, 'someSecret')
     } catch (e) {
-
+        return Promise.reject()
     }
 
     //success case
@@ -78,4 +77,6 @@ userSchema.statics.findByToken = function(token) {
 
 let User = mongoose.model('User', userSchema);
 
-module.exports = User
+module.exports = {
+    User
+}

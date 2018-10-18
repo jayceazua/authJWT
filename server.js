@@ -1,5 +1,6 @@
 const express = require('express');
-const User = require('./models/user');
+const { User } = require('./models/user');
+const { authenicate } = require('./middleware/authenicate');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const port = process.env.PORT || 3000;
@@ -10,7 +11,7 @@ require('./database/MongoDB');
 // MIDDLEWARE
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: false
 }));
 // override with POST having ?_method=DELETE & ?_method=PUT
 app.use(methodOverride('X-HTTP-Method-Override'));
@@ -23,18 +24,11 @@ app.use(methodOverride((req, res) => {
     }
 }));
 
+app.get('/bananas', authenicate, (req, res) => {
+    res.send(req.user);
+});
 
-app.get('/bananas', (req, res) => {
-    let token = req.header('x-auth');
-
-    User.findByToken(token).then((user) => {
-        if(!user) {
-
-        }
-
-        res.send(user)
-    })
-})
+// user auth routes
 const auth = require('./controllers/auth')
 app.use(auth);
 
