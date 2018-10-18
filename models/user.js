@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const _ = require('lodash');
 
-let userSchema = new Schema ({
+let userSchema = new Schema({
     email: {
         type: String,
         required: true,
@@ -26,7 +26,7 @@ let userSchema = new Schema ({
             type: String,
             required: true
         },
-        token:{
+        token: {
             type: String,
             required: true
         }
@@ -43,12 +43,35 @@ userSchema.methods.toJSON = function() {
 userSchema.methods.generateAuthToken = function() {
     let user = this;
     let access = 'auth';
-    let token = jwt.sign({ _id: user._id.toHexString(), access }, 'someSecret').toString();
-    user.tokens.push({access, token})
+    let token = jwt.sign({
+        _id: user._id.toHexString(),
+        access
+    }, 'someSecret').toString();
+    user.tokens.push({
+        access,
+        token
+    })
     // user.tokens = user.tokens.concat([access, token]);
     return user.save().then(() => {
         return token
     })
+};
+
+userSchema.statics.findByToken = function(token) {
+    let User = this;
+    let decoded;
+    
+    try {
+        decoded = jwt.verify(token, "someSecret");
+    } catch(e) {
+
+    }
+
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    });
 };
 
 
