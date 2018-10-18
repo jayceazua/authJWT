@@ -22,7 +22,7 @@ app.use(methodOverride((req, res) => {
 }));
 
 const auth = require('./controllers/auth')
-app.use(auth);
+app.use('/users',auth);
 
 
 app.listen(3000, () => {
