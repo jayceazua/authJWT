@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 const validator = require('validator');
+const _ = require('lodash');
 
 let userSchema = new Schema ({
     email: {
@@ -32,11 +33,22 @@ let userSchema = new Schema ({
     }]
 });
 
+userSchema.methods.toJSON = function() {
+    let user = this;
+    let userObject = user.toObject();
+
+    return _.pick(userObject, ['_id', 'email'])
+}
+
 userSchema.methods.generateAuthToken = function() {
     let user = this;
     let access = 'auth';
-    let token = jwt.sign({ _id: user._id.toHexString(), access }, process.env.SECRET).toHexString();
-    user.tokens = user.tokens.concat([access, token]);
+    let token = jwt.sign({ _id: user._id.toHexString(), access }, 'someSecret').toString();
+    user.tokens.push({access, token})
+    // user.tokens = user.tokens.concat([access, token]);
+    return user.save().then(() => {
+        return token
+    })
 };
 
 
