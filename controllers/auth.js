@@ -22,14 +22,16 @@ router.post('/users', (req, res) => {
         });
 });
 
-// LOGIN FORM
-router.get('/login', (req, res) => {
-    res.json('Login form')
+router.get('/users/me', (req, res) => {
+    let token = req.header('x-auth');
+    User.findByToken(token).then((user) => {
+        if(!user) {
+
+        }
+        res.send(user);
+    });
 });
-// LOGIN USER
-router.post('/login', (req, res) => {
-    res.json('Successfully logged in.')
-});
+
 
 
 module.exports = router
