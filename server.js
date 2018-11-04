@@ -37,4 +37,4 @@ app.listen(port, () => {
     console.log(`Server is on port: ${port}`)
 });
 
-module.exports = {app}
+module.exports = { app }
