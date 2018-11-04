@@ -11,7 +11,6 @@ let UserSchema = new Schema({
         required: true,
         trim: true,
         minlength: 1,
-        unique: true,
         validate: {
             validator: validator.isEmail,
             message: `{VALUE} not a valid email`
@@ -44,7 +43,7 @@ UserSchema.methods.toJSON = function() {
 UserSchema.methods.generateAuthToken = function() {
     let user = this;
     let access = 'auth';
-    let token = jwt.sign({ _id: user._id.toHexString(), access }, process.env.SECRET).toString();
+    let token = jwt.sign({ _id: user._id.toHexString(), access }, "secretWord").toString();
     // user.tokens.push({ access, token })
     user.tokens = user.tokens.concat([{ access, token }]);
     return user.save().then(() => {
@@ -72,22 +71,23 @@ UserSchema.statics.findByToken = function(token) {
     })
 };
 
+
+/* This is messing up my token creation */
+
 UserSchema.pre('save', function (next) {
     let user = this;
 
     if(user.isModified('password')) {
         // user.password
-        bcrypt.genSalt(10).then((salt) => {
-            bcrypt.hash(user.password, salt).then((hash) => {
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
                 user.password = hash;
                 next();
-            }).catch((err) => {
-                console.log(err.message)
             });
-        }).catch((err) => {
-            console.log(err.message)
         });
-    } else {}
+    } else{
+        next();
+    }
 });
 
 let User = mongoose.model('User', UserSchema);

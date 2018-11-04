@@ -3,7 +3,7 @@ const { User } = require('./models/user');
 const { authenicate } = require('./middleware/authenicate');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const app = express();
 
 // database connection
@@ -33,6 +33,6 @@ const auth = require('./controllers/auth')
 app.use(auth);
 
 
-app.listen(3000, () => {
-    console.log(`Server is on port: 3000`)
+app.listen(port, () => {
+    console.log(`Server is on port: ${port}`)
 });
