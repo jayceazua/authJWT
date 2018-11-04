@@ -34,26 +34,23 @@ let UserSchema = new Schema({
     }]
 });
 
+// overriding method to show limited amount of data
 UserSchema.methods.toJSON = function() {
     let user = this;
     let userObject = user.toObject();
-    return _.pick(userObject, ['_id', 'email'])
+    return _.pick(userObject, ['_id', 'email']);
 }
 
 UserSchema.methods.generateAuthToken = function() {
     let user = this;
     let access = 'auth';
-    let token = jwt.sign({
-        _id: user._id.toHexString(),
-        access
-    }, 'someSecret').toString();
-    user.tokens.push({
-        access,
-        token
-    })
-    // user.tokens = user.tokens.concat([access, token]);
+    let token = jwt.sign({ _id: user._id.toHexString(), access }, process.env.SECRET).toString();
+    // user.tokens.push({ access, token })
+    user.tokens = user.tokens.concat([{ access, token }]);
     return user.save().then(() => {
         return token
+    }).catch((err) => {
+        console.log(err.message)
     })
 };
 
@@ -80,21 +77,20 @@ UserSchema.pre('save', function (next) {
 
     if(user.isModified('password')) {
         // user.password
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(user.password, salt, (err, hash) => {
+        bcrypt.genSalt(10).then((salt) => {
+            bcrypt.hash(user.password, salt).then((hash) => {
                 user.password = hash;
                 next();
-            })
-        })
-        // user.password = hash
-        // next();
-    }
-    else {
-
-    }
+            }).catch((err) => {
+                console.log(err.message)
+            });
+        }).catch((err) => {
+            console.log(err.message)
+        });
+    } else {}
 });
 
-let User = mongoose.model('User', userSchema);
+let User = mongoose.model('User', UserSchema);
 
 module.exports = {
     User
