@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/test_*"
   },
   "keywords": [],
   "author": "",
@@ -19,5 +19,8 @@
     "method-override": "^3.0.0",
     "mongoose": "^5.3.4",
     "validator": "^10.8.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
   }
 }
