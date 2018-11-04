@@ -1,6 +1,6 @@
 const { User } = require('../models/user');
 // middle for authorization
-const authenicate = (req, res, next) => {
+const authenticate = (req, res, next) => {
     let token = req.header('x-auth');
     User.findByToken(token)
     .then((user) => {
@@ -16,4 +16,4 @@ const authenicate = (req, res, next) => {
     });
 }
 
-module.exports = { authenicate }
+module.exports = { authenticate }

@@ -18,8 +18,8 @@ const users = [{
     password: "qweasd123"
 }];
 
-const populateUsers = (done) {
-    User.remove({}).then(() => {
+const populateUsers = (done) => {
+    User.deleteMany({}).then(() => {
         let userOne = new User(users[0]).save();
         let userTwo = new User(users[1]).save();
 

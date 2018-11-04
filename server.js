@@ -1,6 +1,6 @@
 const express = require('express');
 const { User } = require('./models/user');
-const { authenicate } = require('./middleware/authenicate');
+const { authenticate } = require('./middleware/authenticate');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const port = process.env.PORT || 8080;
@@ -24,7 +24,14 @@ app.use(methodOverride((req, res) => {
     }
 }));
 
-app.get('/bananas', authenicate, (req, res) => {
+app.get('/', (req, res) => {
+    res.status(200).send({
+        error: "Page not found.",
+        name: "Authentication and Authorization Tutorial."
+    })
+});
+
+app.get('/bananas', authenticate, (req, res) => {
     res.send(req.user);
 });
 
@@ -37,4 +44,4 @@ app.listen(port, () => {
     console.log(`Server is on port: ${port}`)
 });
 
-module.exports = { app }
+module.exports = { app };
