@@ -71,9 +71,6 @@ UserSchema.statics.findByToken = function(token) {
     })
 };
 
-
-/* This is messing up my token creation */
-
 UserSchema.pre('save', function (next) {
     let user = this;
 
