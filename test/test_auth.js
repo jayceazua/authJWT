@@ -30,8 +30,8 @@ describe("Users: ", () => {
             users.remove()
         })
     });
-    // populate seed data for users
-    beforeEach(populateUsers)
+
+    beforeEach(populateUsers) // populate seed data for users
 
     describe("Authentication: ", () => {
 

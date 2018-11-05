@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { User } = require('../models/user');
+const { authenticate } = require('../middleware/authenticate');
 const _ = require('lodash');
 
 // NEW USER
@@ -21,7 +22,7 @@ router.post('/users', (req, res) => {
     });
 });
 
-// POST/ LOGIN
+// LOGIN
 router.post('/users/login', (req, res) => {
     let body = _.pick(req.body, ['email', 'password']);
 
@@ -33,5 +34,14 @@ router.post('/users/login', (req, res) => {
         res.status(400).send()
     });
 });
+// LOGOUT
+router.delete('/users/logout', authenticate, (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send()
+    }, () => {
+        res.status(400).send()
+    })
+})
+
 
 module.exports = router
