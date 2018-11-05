@@ -9,7 +9,6 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 it("should return hello world response", (done) => {
-    beforeEach(populateUsers)
     chai.request(app)
         .get('/')
         .then((res) => {
@@ -32,6 +31,9 @@ describe("Users: ", () => {
             users.remove()
         })
     });
+    
+    beforeEach(populateUsers)
+
     describe("Authentication: ", () => {
         it("should create new user", (done) => {
             chai.request(app)
@@ -63,6 +65,6 @@ describe("Users: ", () => {
         it("should return 401 if user not authenticated", (done) => {
             done()
         });
-    }) ;
+    });
 
 });
