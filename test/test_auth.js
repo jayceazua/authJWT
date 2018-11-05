@@ -7,6 +7,8 @@ const chaiHttp = require('chai-http');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
+
+//
 it("should return hello world response", (done) => {
     chai.request(app)
         .get('/')
@@ -129,7 +131,7 @@ describe("Users: ", () => {
                 .get('/bananas')
                 .set('x-auth', users[0].tokens[0].token)
                 .then((res) => {
-                    expect(res).to.have.status(200);
+                    expect(res).to.have.status(200); // start with the simpliest test.
                     expect(res.body).to.be.an('object');
                     expect(res.body).to.have.all.keys('_id', 'email');
                     expect(res.body.email).to.equal(users[0].email);
