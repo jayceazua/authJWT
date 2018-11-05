@@ -34,7 +34,7 @@ describe("Users: ", () => {
     beforeEach(populateUsers)
 
     describe("Authentication: ", () => {
-        
+
         it("should create new user", (done) => {
             const demoUser = { email: "azua@makeschool.com", password: "zxcqwe123" };
             chai.request(app)
@@ -92,14 +92,34 @@ describe("Users: ", () => {
                 .then((res) => {
                     expect(res).to.have.status(200);
                     expect(res.headers['x-auth']).to.exist;
+                    User.findById(users[1]._id).then((user) => {
+                        expect(user.tokens[0]).to.include({
+                            access: 'auth',
+                            token: res.header['x-auth']
+                        });
+                    }).catch(err => done(err));
                     return done();
                 })
                 .catch(err => done(err));
         });
 
         it('should reject invalid login', (done) => {
-
-        })
+            chai.request(app)
+                .post('/users/login')
+                .send({
+                    email: users[1].email,
+                    password: '123'
+                })
+                .then((res) => {
+                    expect(res).to.have.status(400);
+                    expect(res.headers['x-auth']).to.not.exist;
+                    User.findById(users[1]._id).then((user) => {
+                        expect(user.tokens.length).to.equal(0)
+                    }).catch(err => done(err));
+                    return done();
+                })
+                .catch(err => done(err));
+        });
     }); // end of... Authentication: Describe
 
     describe("Authorization: " , () => {
