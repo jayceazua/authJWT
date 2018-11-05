@@ -1,6 +1,5 @@
 const chai = require('chai');
-// WTF is this?
-const { ObjectID } = require('mongodb');
+// const { ObjectID } = require('mongodb'); // <- might not need it
 const { User } = require('./../models/user');
 const { app } = require('./../server');
 const { users, populateUsers } = require('./seed/seed');
@@ -31,7 +30,7 @@ describe("Users: ", () => {
             users.remove()
         })
     });
-
+    // populate seed data for users
     beforeEach(populateUsers)
 
     describe("Authentication: ", () => {
@@ -41,16 +40,15 @@ describe("Users: ", () => {
                 .post('/users')
                 .send(demoUser)
                 .then((res) => {
-
                     expect(res).to.have.header('x-auth');
                     expect(res.body).to.have.keys('_id', 'email');
                     User.findOne({ email: demoUser.email }).then((user) => {
                         // Test to make sure the password is being hashed.
-                        expect(demoUser.password).to.not.equal(user.password)
+                        expect(demoUser.password).to.not.equal(user.password);
                     });
                     return done();
                 })
-                .catch(err => done(err))
+                .catch(err => done(err));
         });
 
         it('should return validation errors if request invalid', (done) => {
@@ -64,13 +62,22 @@ describe("Users: ", () => {
                     expect(res).to.have.status(400);
                     return done();
                 })
-                .catch(err => done(err))
+                .catch(err => done(err));
         });
-        /*
-        Future Test:
-         check if the username/ email is already in use throw err status 400
-        */
-    });
+        it('should not create user if email in use', (done) => {
+            chai.request(app)
+                .post('/users')
+                .send({
+                    email: users[0].email,
+                    password: users[0].password
+                })
+                .then((res) => {
+                    expect(res).to.have.status(400);
+                    return done();
+                })
+                .catch(err => done(err));
+        });
+    }); // end of... Authentication: Describe
 
     describe("Authorization: " , () => {
         it("should return 200 if user is authenticated", (done) => {
@@ -99,6 +106,6 @@ describe("Users: ", () => {
                 })
                 .catch(err => done(err))
         });
-    });
+    }); // end of... Authorization: Describe
 
-});
+}); // end of... Users: Describe
