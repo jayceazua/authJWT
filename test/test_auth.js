@@ -1,8 +1,9 @@
 const chai = require('chai');
 // WTF is this?
 const { ObjectID } = require('mongodb');
+const { User } = require('./../models/user');
 const { app } = require('./../server');
-// const { users, populateUsers } = require('./seed/seed');
+const { users, populateUsers } = require('./seed/seed');
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
 chai.use(chaiHttp);
@@ -22,24 +23,45 @@ it("should return hello world response", (done) => {
 
 
 
-describe("Authentication: ", () => {
-
-    it("should create new user", (done) => {
-        chai.request(app)
-            .post('/users')
-            .send({ email: "azua@makeschool.com", password: "zxcqwe123" })
-            .then((res) => {
-                expect(res).to.have.status(200);
-                expect(res).to.have.header('x-auth');
-                expect(res.body).to.have.keys('_id', 'email');
-                return done();
-            })
-            .catch(err => done(err))
+describe("Users: ", () => {
+    // Clean database of garbage data.
+    after(() => {
+        User.deleteMany({})
+        .exec((err, users) => {
+            users.remove()
+        })
+    });
+    describe("Authentication: ", () => {
+        it("should create new user", (done) => {
+            chai.request(app)
+                .post('/users')
+                .send({ email: "azua@makeschool.com", password: "zxcqwe123" })
+                .then((res) => {
+                    expect(res).to.have.status(200);
+                    expect(res).to.have.header('x-auth');
+                    expect(res.body).to.have.keys('_id', 'email');
+                    return done();
+                })
+                .catch(err => done(err))
+        });
     });
 
-    it("should return 401 if user not authenticated", (done) => {
+    describe("Authorization: " , () => {
+        it("should return 200 if user is authenticated", (done) => {
+            chai.request(app)
+                .get('/bananas')
+                .set('x-auth', users[0].tokens[0].token)
+                .then((res) => {
+                    console.log(users[0].tokens[0].token)
+                    expect(res).to.have.status(200)
+                    return done();
+                })
+                .catch(err => done(err))
+        });
 
-    });
-
+        it("should return 401 if user not authenticated", (done) => {
+            done()
+        });
+    }) ;
 
 });

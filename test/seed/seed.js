@@ -22,7 +22,7 @@ const populateUsers = (done) => {
     User.deleteMany({}).then(() => {
         let userOne = new User(users[0]).save();
         let userTwo = new User(users[1]).save();
-
+        console.log(userOne)
         // Promise all method waits for all promises to resolve.
         return Promise.all([userOne, userTwo])
     }).then(() => done());
