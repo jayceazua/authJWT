@@ -1,12 +1,11 @@
 # Authentication with JWT (JSON Web Tokens) in Node
 
-<img src="https://github.com/jayceazua/authJWT/blob/master/jwt-auth.jpg" width="700" height="500"/>
+<img src="https://github.com/jayceazua/authJWT/blob/master/authJWT.png" width="700" height="500"/>
 
 ### Technologies for Authentication
 - [JSON Web Token](https://github.com/auth0/node-jsonwebtoken)
 - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
-- [Supertest](https://github.com/visionmedia/supertest)
-- [Expect](https://github.com/mjackson/expect)
+
 
 #### Notes:
 - You do not need to keep track of sessions, cookies, CSRF, or CORS.
