@@ -1,6 +1,6 @@
 # Authentication with JWT (JSON Web Tokens) in Node
 
-<img src="https://github.com/jayceazua/authJWT/blob/master/authJWT.png" width="700" height="500"/>
+<img src="https://github.com/jayceazua/authJWT/blob/master/authJWT.png" />
 
 ### Technologies for Authentication
 - [JSON Web Token](https://github.com/auth0/node-jsonwebtoken)
