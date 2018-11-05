@@ -31,7 +31,7 @@ describe("Users: ", () => {
             users.remove()
         })
     });
-    
+
     beforeEach(populateUsers)
 
     describe("Authentication: ", () => {
@@ -57,6 +57,7 @@ describe("Users: ", () => {
                 .then((res) => {
                     expect(res).to.have.status(200)
                     expect(res.body.email).to.equal(users[0].email)
+                    expect(res.body._id).to.equal(users[0]._id.toString())
                     return done();
                 })
                 .catch(err => done(err))
