@@ -11,6 +11,7 @@ let UserSchema = new Schema({
         required: true,
         trim: true,
         minlength: 1,
+        // unique: true, <- this is deprecated; hopefully mongoose updates this.
         validate: {
             validator: validator.isEmail,
             message: `{VALUE} not a valid email`

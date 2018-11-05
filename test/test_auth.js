@@ -36,17 +36,40 @@ describe("Users: ", () => {
 
     describe("Authentication: ", () => {
         it("should create new user", (done) => {
+            const demoUser = { email: "azua@makeschool.com", password: "zxcqwe123" };
             chai.request(app)
                 .post('/users')
-                .send({ email: "azua@makeschool.com", password: "zxcqwe123" })
+                .send(demoUser)
                 .then((res) => {
-                    expect(res).to.have.status(200);
+
                     expect(res).to.have.header('x-auth');
                     expect(res.body).to.have.keys('_id', 'email');
+                    User.findOne({ email: demoUser.email }).then((user) => {
+                        // Test to make sure the password is being hashed.
+                        expect(demoUser.password).to.not.equal(user.password)
+                    });
                     return done();
                 })
                 .catch(err => done(err))
         });
+
+        it('should return validation errors if request invalid', (done) => {
+            chai.request(app)
+                .post('/users')
+                .send({
+                    email: 'makeschool',
+                    password: '123'
+                })
+                .then((res) => {
+                    expect(res).to.have.status(400);
+                    return done();
+                })
+                .catch(err => done(err))
+        });
+        /*
+        Future Test:
+         check if the username/ email is already in use throw err status 400
+        */
     });
 
     describe("Authorization: " , () => {
@@ -55,16 +78,26 @@ describe("Users: ", () => {
                 .get('/bananas')
                 .set('x-auth', users[0].tokens[0].token)
                 .then((res) => {
-                    expect(res).to.have.status(200)
-                    expect(res.body.email).to.equal(users[0].email)
-                    expect(res.body._id).to.equal(users[0]._id.toString())
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.be.an('object');
+                    expect(res.body).to.have.all.keys('_id', 'email');
+                    expect(res.body.email).to.equal(users[0].email);
+                    expect(res.body._id).to.equal(users[0]._id.toHexString())
                     return done();
                 })
                 .catch(err => done(err))
         });
 
         it("should return 401 if user not authenticated", (done) => {
-            done()
+            chai.request(app)
+                .get('/bananas')
+                .then((res) => {
+                    expect(res).to.have.status(401);
+                    expect(res.body).to.be.an('object');
+                    expect(res.body).to.not.have.any.keys('_id', 'email');
+                    return done();
+                })
+                .catch(err => done(err))
         });
     });
 
