@@ -34,13 +34,16 @@ describe("Users: ", () => {
     beforeEach(populateUsers)
 
     describe("Authentication: ", () => {
+        
         it("should create new user", (done) => {
             const demoUser = { email: "azua@makeschool.com", password: "zxcqwe123" };
             chai.request(app)
                 .post('/users')
                 .send(demoUser)
                 .then((res) => {
+                    expect(res).to.have.status(200);
                     expect(res).to.have.header('x-auth');
+                    expect(res.headers['x-auth']).to.exist;
                     expect(res.body).to.have.keys('_id', 'email');
                     User.findOne({ email: demoUser.email }).then((user) => {
                         // Test to make sure the password is being hashed.
@@ -64,6 +67,7 @@ describe("Users: ", () => {
                 })
                 .catch(err => done(err));
         });
+
         it('should not create user if email in use', (done) => {
             chai.request(app)
                 .post('/users')
@@ -77,9 +81,29 @@ describe("Users: ", () => {
                 })
                 .catch(err => done(err));
         });
+
+        it('should login user and return a auth token', (done) => {
+            chai.request(app)
+                .post('/users/login')
+                .send({
+                    email: users[1].email,
+                    password: users[1].password
+                })
+                .then((res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.headers['x-auth']).to.exist;
+                    return done();
+                })
+                .catch(err => done(err));
+        });
+
+        it('should reject invalid login', (done) => {
+
+        })
     }); // end of... Authentication: Describe
 
     describe("Authorization: " , () => {
+
         it("should return 200 if user is authenticated", (done) => {
             chai.request(app)
                 .get('/bananas')
