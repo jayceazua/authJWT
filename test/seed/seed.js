@@ -10,7 +10,7 @@ const users = [{
     password: "asdzxc123",
     tokens: [{
         access: 'auth',
-        token: jwt.sign({ _id: userOneId, access: 'auth' }, "secretWord").toString()
+        token: jwt.sign({ _id: userOneId.toHexString(), access: 'auth' }, 'someSecret').toString()
     }]
 }, {
     _id: userTwoId,
@@ -22,7 +22,6 @@ const populateUsers = (done) => {
     User.deleteMany({}).then(() => {
         let userOne = new User(users[0]).save();
         let userTwo = new User(users[1]).save();
-        console.log(userOne)
         // Promise all method waits for all promises to resolve.
         return Promise.all([userOne, userTwo])
     }).then(() => done());
