@@ -1,5 +1,4 @@
 const chai = require('chai');
-// const { ObjectID } = require('mongodb'); // <- might not need it
 const { User } = require('./../models/user');
 const { app } = require('./../server');
 const { users, populateUsers } = require('./seed/seed');
@@ -17,9 +16,9 @@ it("should return hello world response", (done) => {
             expect(res.body).to.be.an('object');
             expect(res.body).to.have.keys('error', 'name');
             expect(res).to.have.header('content-type', "application/json; charset=utf-8");
-            return done()
+            return done();
         })
-        .catch(err => done(err))
+        .catch(err => done(err));
 });
 
 
@@ -29,8 +28,8 @@ describe("Users: ", () => {
     after(() => {
         User.deleteMany({})
         .exec((err, users) => {
-            users.remove()
-        })
+            users.remove();
+        });
     });
 
     beforeEach(populateUsers) // populate seed data for users
@@ -116,8 +115,22 @@ describe("Users: ", () => {
                     expect(res).to.have.status(400);
                     expect(res.headers['x-auth']).to.not.exist;
                     User.findById(users[1]._id).then((user) => {
-                        expect(user.tokens.length).to.equal(0)
+                        expect(user.tokens.length).to.equal(0);
                     }).catch(err => done(err));
+                    return done();
+                })
+                .catch(err => done(err));
+        });
+
+        it('should logout', (done) => {
+            chai.request(app)
+                .delete('/users/logout')
+                .set('x-auth', users[0].tokens[0].token)
+                .then((res) => {
+                    expect(res).to.have.status(200);
+                    User.findById(users[0]._id).then((user) => {
+                        expect(user.tokens.length).to.equal(0);
+                    });
                     return done();
                 })
                 .catch(err => done(err));
@@ -138,7 +151,7 @@ describe("Users: ", () => {
                     expect(res.body._id).to.equal(users[0]._id.toHexString())
                     return done();
                 })
-                .catch(err => done(err))
+                .catch(err => done(err));
         });
 
         it("should return 401 if user not authenticated", (done) => {
